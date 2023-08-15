@@ -20,6 +20,11 @@ public class RotationButton : MonoBehaviour
         }
     }
 
+    public void OnMouseDown()
+    {
+        button.onClick.AddListener(RotateBlock);
+    }
+
     public void RotateBlock()
     {
         if (targetBlock != null)

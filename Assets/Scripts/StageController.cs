@@ -72,7 +72,7 @@ public class StageController : MonoBehaviour
 
     private IEnumerator OnAfterBlockArrangement(DragBlock block)
     {
-        Destroy(block.gameObject);
+        //Destroy(block.gameObject);
 
         CurrentScore += block.ChildBlocks.Length;
 

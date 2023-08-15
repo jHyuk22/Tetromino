@@ -10,6 +10,7 @@ public class DragBlock : MonoBehaviour
     private AnimationCurve curveScale;
 
     private BlockArrangeSystem blockArrangeSystem;
+    private bool pivotFlag = false;
 
     private float appealTIme = 0.5f;
     private float returnTime = 0.1f;
@@ -45,20 +46,35 @@ public class DragBlock : MonoBehaviour
         transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + gap;
     }
 
-    private void OnMouseUp()
+    private void OnMouseUp()        //블럭개수말고 회전여부로 확인하는방법에 대해 생각해봅시다.......
     {
+        Debug.Log("OnMouseUp반올림이전(transform.position): " + transform.position);
+
         float x = Mathf.RoundToInt(transform.position.x - BlockCount.x % 2 * 0.5f) + BlockCount.x % 2 * 0.5f;
         float y = Mathf.RoundToInt(transform.position.y - BlockCount.y % 2 * 0.5f) + BlockCount.y % 2 * 0.5f;
 
         transform.position = new Vector3(x, y, 0);
+        Debug.Log("OnMouseUp반올림이후(transform.position): " + transform.position);
 
         bool isSuccess = blockArrangeSystem.TryArrangementBlock(this);
 
         if (isSuccess == false)
         {
             StopCoroutine("OnScaleTo");
+            RotateClockWise();
             StartCoroutine("OnScaleTo", Vector3.one * 0.5f);
             StartCoroutine(OnMoveTo(transform.parent.position, returnTime));
+        }
+    }
+
+    public void RotateClockWise()
+    {
+        transform.Rotate(0f, 0f, -90f);
+        //Debug.Log("RotateClockWise(transform.position): " + transform.position);
+        for (int i = 0; i < ChildBlocks.Length; ++i)
+        {
+            ChildBlocks[i] = transform.GetChild(i).position - transform.position;   //자식 오브젝트의 전역좌표에서 부모 오브젝트의 전역좌표를 빼서 자식 오브젝트의 지역좌표 산출
+            //Debug.Log("RotateClockWise(ChildBlocks["+i+"]): " + ChildBlocks[i]);
         }
     }
 
