@@ -24,6 +24,7 @@ public class StageController : MonoBehaviour
     public int CurrentScore { private set; get; }
     public int HighScore { private set; get; }
     public Slider slTimer;
+    public bool isNewBest;
 
     private readonly Vector2Int blockCount = new Vector2Int(10, 10);
     private readonly Vector2 blockHalf = new Vector2(0.5f, 0.5f);
@@ -33,6 +34,7 @@ public class StageController : MonoBehaviour
     {
         CurrentScore = 0;
         HighScore = PlayerPrefs.GetInt("HighScore");
+        isNewBest = false;
 
         backgroundBlockSpawner.SpawnBlocks(blockCount, blockHalf);
 
@@ -72,7 +74,7 @@ public class StageController : MonoBehaviour
 
     private IEnumerator OnAfterBlockArrangement(DragBlock block)
     {
-        //Destroy(block.gameObject);
+        Destroy(block.gameObject);
 
         CurrentScore += block.ChildBlocks.Length;
 
@@ -90,6 +92,7 @@ public class StageController : MonoBehaviour
             if(CurrentScore > HighScore)
             {
                 PlayerPrefs.SetInt("HighScore", CurrentScore);
+                isNewBest = true;
             }
 
             uiController.GameOver();
@@ -101,13 +104,14 @@ public class StageController : MonoBehaviour
         if (CurrentScore > HighScore)
         {
             PlayerPrefs.SetInt("HighScore", CurrentScore);
+            isNewBest = true;
         }
 
         sliderTimer.StopTimer();
         uiController.GameOver();
     }
 
-    private bool IsGameOver()
+    public bool IsGameOver()
     {
         int dragBlockCount = 0;
         for(int i=0; i < dragBlockSpawner.BlockSpawnPoints.Length; ++i)
@@ -115,13 +119,14 @@ public class StageController : MonoBehaviour
             if (dragBlockSpawner.BlockSpawnPoints[i].childCount != 0)
             {
                 dragBlockCount++;
+                Debug.Log("IsGameOver(BlockSpawnPoints[" + i + "])");
                 if (blockArrangeSystem.IsPossibleArrangement(dragBlockSpawner.BlockSpawnPoints[i].GetComponentInChildren<DragBlock>()))
                 {
+                    //Debug.Log("배치 가능");
                     return false;
                 }
             }
         }
-
         if (slTimer.value <= 0.0f || dragBlockCount != 0) // Check if timer has expired or blocks cannot be arranged
         {
             EndGame();

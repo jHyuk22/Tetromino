@@ -26,6 +26,10 @@ public class UIController : MonoBehaviour
     private Image imageScreenshot;
     [SerializeField]
     private TextMeshProUGUI textResultScore;
+    [SerializeField]
+    private GameObject textNewBest;
+
+    public SliderTimer timer;
 
     private void Update()
     {
@@ -36,6 +40,7 @@ public class UIController : MonoBehaviour
     public void BtnClickPause()
     {
         pausePanel.OnAppear();
+        timer.StopTimer();
     }
 
     public void BtnClickHome()
@@ -51,6 +56,7 @@ public class UIController : MonoBehaviour
     public void BtnClickPlay()
     {
         pausePanel.OnDisappear();
+        timer.StartTimer();
     }
 
     public void GameOver()
@@ -58,6 +64,10 @@ public class UIController : MonoBehaviour
         imageScreenshot.sprite = screenshot.ScreenshotToSprite();
         textResultScore.text = stageController.CurrentScore.ToString();
 
+        if (stageController.isNewBest)
+        {
+            textNewBest.SetActive(true);
+        }
         panelGameOver.SetActive(true);
     }
 }

@@ -45,6 +45,11 @@ public class SliderTimer : MonoBehaviour
         enabled = false;
     }
 
+    public void StartTimer()
+    {
+        enabled = true;
+    }
+
     void UpdateTimeText()
     {
         int seconds = Mathf.FloorToInt(slTimer.value);

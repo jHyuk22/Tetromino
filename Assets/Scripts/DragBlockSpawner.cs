@@ -12,9 +12,6 @@ public class DragBlockSpawner : MonoBehaviour
     private GameObject[] blockPrefabs;
     [SerializeField]
     private Vector3 spawnGapAmount = new Vector3(0, -10, 0);
-    [SerializeField]
-    private GameObject rotateButtonPrefab;
-
 
     public Transform[] BlockSpawnPoints => blockSpawnPoints;
 
