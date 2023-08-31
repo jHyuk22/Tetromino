@@ -42,7 +42,14 @@ public class StageController : MonoBehaviour
         backgroundBlocks = foregroundBlockSpawner.SpawnBlocks(blockCount, blockHalf);
 
         blockArrangeSystem.Setup(blockCount, blockHalf, backgroundBlocks, this);
-
+        /*for (int i=0; i<100; i++)
+        {
+            if (i % 10 > 3 || i >= 40)
+            {
+                Color color = Color.yellow;
+                backgroundBlocks[i].FillBlock(color);
+            }
+        }*/
         StartCoroutine(SpawnDragBlocks());
     }
 
@@ -122,7 +129,6 @@ public class StageController : MonoBehaviour
                 Debug.Log("IsGameOver(BlockSpawnPoints[" + i + "])");
                 if (blockArrangeSystem.IsPossibleArrangement(dragBlockSpawner.BlockSpawnPoints[i].GetComponentInChildren<DragBlock>()))
                 {
-                    //Debug.Log("배치 가능");
                     return false;
                 }
             }

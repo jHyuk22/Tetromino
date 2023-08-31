@@ -57,7 +57,8 @@ public class BlockArrangeSystem : MonoBehaviour
         float x = blockCount.x * 0.5f - blockHalf.x + position.x; //4.5+position.x
         float y = blockCount.y * 0.5f - blockHalf.y - position.y; //4.5-position.y
 
-        return Mathf.RoundToInt(y * blockCount.x + x);  //49.5-10*position.y + position.x
+        return (int)((y * blockCount.x + x)+0.5f);  //49.5-10*position.y + position.x
+        //return Mathf.RoundToInt(y * blockCount.x + x);
     }
 
     private bool IsOtherBlockInThisBlock(Vector2 position)
@@ -78,25 +79,44 @@ public class BlockArrangeSystem : MonoBehaviour
         {
             for (int x = 0; x < blockCount.x; ++x)
             {
-                int count = 0;
                 Vector3 position = new Vector3(-blockCount.x * 0.5f + blockHalf.x + x, blockCount.y * 0.5f - blockHalf.y - y, 0);
 
                 position.x = block.BlockCount.x % 2 == 0 ? position.x + 0.5f : position.x;
                 position.y = block.BlockCount.y % 2 == 0 ? position.y - 0.5f : position.y;
-                for (int i = 0; i < block.ChildBlocks.Length; ++i)
+                for (int j = 0; j < 4; j++)     //미노의 0, 90, 180, 270도 회전에 대한 검사
                 {
-                    Vector3 blockPosition = block.ChildBlocks[i] + position;
-                    if (!IsBlockInsideMap(blockPosition)) break;
-                    if (!IsOtherBlockInThisBlock(blockPosition)) break;
+                    int count = 0;
+                    
+                    for (int i = 0; i < block.ChildBlocks.Length; ++i)      //미노의 각 자식 오브젝트 위치에 대한 검사
+                    {
+                        //Vector3 blockPosition = block.ChildBlocks[i] + position;
+                        Vector3 blockPosition = CheckRotate(block.ChildBlocks[i], j) + position;
+                        if (!IsBlockInsideMap(blockPosition))
+                        {
+                            Debug.Log("Block isn't inside the map! i: " + i + ", j: " + j +", Index: " + PositionToIndex(blockPosition) + blockPosition);
+                            break;
+                        }
+                        if (!IsOtherBlockInThisBlock(blockPosition))
+                        {
+                            Debug.Log("Other Block in this block!" + i + ", j: " + j +", Index: " + PositionToIndex(blockPosition) + blockPosition);
+                            break;
+                        }
+                        count++;
+                    }
 
-                    count++;
+                    if (count == block.ChildBlocks.Length)
+                    {
+                        Debug.Log("y: " + y + ", x: " + x + ", j: " + j + " 에서 배치 가능");
+                        Debug.Log("그 떄의 부모 오브젝트 좌표는: " + position);
+                        for(int i=0; i<4; i++)
+                        {
+                            Vector3 debugPostion = CheckRotate(block.ChildBlocks[i], j) + position;
+                            Debug.Log("그때의 자식오브젝트 좌표는 block.ChildBlocks[" + i + "]: " + debugPostion);
+                            Debug.Log("그때의 자식오브젝트 인덱스는 block.ChildBlocks[" + i + "]: " + PositionToIndex(debugPostion));
+                        }
+                        return true;
+                    }
                 }
-
-                if (count == block.ChildBlocks.Length)
-                {
-                    return true;
-                }
-
             }
         }
         return false;
@@ -112,20 +132,18 @@ public class BlockArrangeSystem : MonoBehaviour
                 newPosition = position;
                 break;
             case 1:
-                newPosition.x = position.y * -1;
-                newPosition.y = position.x * -1;
+                newPosition.x = position.y * -1 + 0.5f;
+                newPosition.y = position.x + 0.5f;
                 break;
             case 2:
-                newPosition.x = position.x;
+                newPosition.x = position.x * -1;
                 newPosition.y = position.y * -1;
                 break;
             case 3:
-                newPosition.x = position.y;
-                newPosition.y = position.x * -1;
+                newPosition.x = position.y + 0.5f;
+                newPosition.y = position.x * -1 + 0.5f;
                 break;
         }
-
-        //Debug.Log("CheckRotate(newPosition): " + newPosition);
-        return newPosition;
+         return newPosition;
     }
 }

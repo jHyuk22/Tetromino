@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,12 +25,11 @@ public class DragBlockSpawner : MonoBehaviour
 
     private void initList()
     {
-        for (int i = 0; i < blockPrefabs.Length; i++)
+        for (int i = 0; i < blockPrefabs.Length; i++)       //디버깅할때 여기 고쳐서 블럭 스폰되는거 조절하면됨
         {
             nextSpawnBlockIndex.Add(i);
         }
     }
-
 
     private IEnumerator OnSpawnBlocks()
     {
@@ -46,7 +46,7 @@ public class DragBlockSpawner : MonoBehaviour
             nextSpawnBlockIndex.RemoveAt(randomIndex);
 
             Vector3 spawnPosition = blockSpawnPoints[i].position + spawnGapAmount;
-            GameObject clone = Instantiate(blockPrefabs[randomValue], spawnPosition, Quaternion.identity, blockSpawnPoints[i]);
+            GameObject clone = Instantiate(blockPrefabs[randomValue++], spawnPosition, Quaternion.identity, blockSpawnPoints[i]);
 
             clone.GetComponent<DragBlock>().Setup(blockArrangeSystem, blockSpawnPoints[i].position);
         }
