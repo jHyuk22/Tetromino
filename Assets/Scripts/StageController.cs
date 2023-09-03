@@ -42,7 +42,7 @@ public class StageController : MonoBehaviour
         backgroundBlocks = foregroundBlockSpawner.SpawnBlocks(blockCount, blockHalf);
 
         blockArrangeSystem.Setup(blockCount, blockHalf, backgroundBlocks, this);
-        /*for (int i=0; i<100; i++)
+        /*for (int i=0; i<100; i++)     //4*4짜리 칸으로 줄이는 코드
         {
             if (i % 10 > 3 || i >= 40)
             {

@@ -79,14 +79,29 @@ public class BlockArrangeSystem : MonoBehaviour
         {
             for (int x = 0; x < blockCount.x; ++x)
             {
-                Vector3 position = new Vector3(-blockCount.x * 0.5f + blockHalf.x + x, blockCount.y * 0.5f - blockHalf.y - y, 0);
+                /*Vector3 position = new Vector3(-blockCount.x * 0.5f + blockHalf.x + x, blockCount.y * 0.5f - blockHalf.y - y, 0);
 
                 position.x = block.BlockCount.x % 2 == 0 ? position.x + 0.5f : position.x;
-                position.y = block.BlockCount.y % 2 == 0 ? position.y - 0.5f : position.y;
+                position.y = block.BlockCount.y % 2 == 0 ? position.y - 0.5f : position.y;*/
                 for (int j = 0; j < 4; j++)     //미노의 0, 90, 180, 270도 회전에 대한 검사
                 {
                     int count = 0;
-                    
+                    int BlockCountX = block.BlockCount.x;
+                    int BlockCountY = block.BlockCount.y;
+                    int tmp;
+
+                    Vector3 position = new Vector3(-blockCount.x * 0.5f + blockHalf.x + x, blockCount.y * 0.5f - blockHalf.y - y, 0);
+
+                    if (j % 2 != 0)
+                    {
+                        tmp = BlockCountX;
+                        BlockCountX = BlockCountY;
+                        BlockCountY = tmp;
+                    }
+
+                    position.x = BlockCountX % 2 == 0 ? position.x + 0.5f : position.x;
+                    position.y = BlockCountY % 2 == 0 ? position.y - 0.5f : position.y;
+
                     for (int i = 0; i < block.ChildBlocks.Length; ++i)      //미노의 각 자식 오브젝트 위치에 대한 검사
                     {
                         //Vector3 blockPosition = block.ChildBlocks[i] + position;
@@ -132,16 +147,16 @@ public class BlockArrangeSystem : MonoBehaviour
                 newPosition = position;
                 break;
             case 1:
-                newPosition.x = position.y * -1 + 0.5f;
-                newPosition.y = position.x + 0.5f;
+                newPosition.x = position.y * -1;
+                newPosition.y = position.x;
                 break;
             case 2:
                 newPosition.x = position.x * -1;
                 newPosition.y = position.y * -1;
                 break;
             case 3:
-                newPosition.x = position.y + 0.5f;
-                newPosition.y = position.x * -1 + 0.5f;
+                newPosition.x = position.y;
+                newPosition.y = position.x * -1;
                 break;
         }
          return newPosition;
